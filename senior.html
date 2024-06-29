@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Citizen Filter</title>
+    <style>
+        /* Embedded CSS */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #6a85b6, #bac8e0);
+            overflow: hidden;
+            color: #333;
+        }
+
+        #background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            animation: gradientRotate 10s infinite linear;
+        }
+
+        #background div {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            opacity: 0.6;
+        }
+
+        #background .front  { transform: translateZ(200px); }
+        #background .back   { transform: rotateY(180deg) translateZ(200px); }
+        #background .left   { transform: rotateY(-90deg) translateZ(200px); }
+        #background .right  { transform: rotateY(90deg) translateZ(200px); }
+        #background .top    { transform: rotateX(90deg) translateZ(200px); }
+        #background .bottom { transform: rotateX(-90deg) translateZ(200px); }
+
+        @keyframes gradientRotate {
+            from {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            to {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+            z-index: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        input {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            width: 90%;
+            max-width: 400px;
+            font-size: 1rem;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        button {
+            padding: 15px 30px;
+            margin: 10px 0;
+            border-radius: 50px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 60%;
+            max-width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .actions button {
+            width: auto;
+            margin: 0 10px;
+            padding: 10px 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        li {
+            background: #e9e9e9;
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        li:hover {
+            background: #d3d3d3;
+            transform: scale(1.02);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Media Queries */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            input, button {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            li {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            button {
+                width: 80%;
+            }
+
+            .actions button {
+                width: 100px;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Background -->
+    <div id="background">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+    </div>
+
+    <div class="container">
+        <h1>Senior Citizen Filter</h1>
+        <form id="person-form">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="number" id="age" placeholder="Age" required min="0">
+            <button type="submit">Add Person</button>
+        </form>
+        <div class="actions">
+            <button id="show-all-button">Show All</button>
+            <button id="show-seniors-button">Show Seniors</button>
+            <button id="clear-list-button">Clear List</button>
+        </div>
+        <ul id="person-list"></ul>
+        <ul id="senior-list" class="hidden"></ul>
+        <div class="summary">
+            <p>Total Individuals: <span id="total-count">0</span></p>
+            <p>Senior Citizens: <span id="senior-count">0</span></p>
+            <p>Non-Senior Citizens: <span id="non-senior-count">0</span></p>
+        </div>
+    </div>
+    <script>
+        // Embedded JavaScript for enhanced functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('person-form');
+            const showAllButton = document.getElementById('show-all-button');
+            const showSeniorsButton = document.getElementById('show-seniors-button');
+            const clearListButton = document.getElementById('clear-list-button');
+
+            let people = [];
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                addPerson();
+            });
+
+            showAllButton.addEventListener('click', showAll);
+            showSeniorsButton.addEventListener('click', showSeniors);
+            clearListButton.addEventListener('click', clearList);
+
+            function addPerson() {
+                const name = document.getElementById('name').value;
+                const age = parseInt(document.getElementById('age').value);
+
+                const person = { name, age };
+
+                people.push(person);
+                updatePersonList();
+                updateSummary();
+
+                document.getElementById('person-form').reset();
+            }
+
+            function updatePersonList() {
+                const personList = document.getElementById('person-list');
+                personList.innerHTML = ''; // Clear previous list
+
+                people.forEach(person => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${person.name}, Age: ${person.age}`;
+                    personList.appendChild(listItem);
+                });
+
+                showAll(); // Show the full list by default
+            }
+
+            function showAll() {
+                document.getElementById('person-list').style.display = 'block';
+                document.getElementById('senior-list').style.display = 'none';
+            }
+
+            function showSeniors() {
+                const seniorList = document.getElementById('senior-list');
+                seniorList.innerHTML = ''; // Clear previous list
+
+                people.forEach(person => {
+                    if (person.age >= 65) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${person.name}, Age: ${person.age}`;
+                        seniorList.appendChild(listItem);
+                    }
+                });
+
+                document.getElementById('person-list').style.display = 'none';
+                seniorList.style.display = 'block';
+            }
+
+            function updateSummary() {
+                const total = people.length;
+                const seniors = people.filter(person => person.age >= 65).length;
+                const nonSeniors = total - seniors;
+
+                document.getElementById('total-count').textContent = total;
+                document.getElementById('senior-count').textContent = seniors;
+                document.getElementById('non-senior-count').textContent = nonSeniors;
+            }
+
+            function clearList() {
+                people = [];
+                updatePersonList();
+                updateSummary();
+                showAll(); // Reset to show all view
+            }
+        });
+    </script>
+</body>
+</html>
